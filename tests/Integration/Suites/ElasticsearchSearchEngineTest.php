@@ -75,7 +75,7 @@ class ElasticsearchSearchEngineTest extends AbstractSearchEngineTest
         return new ElasticsearchSearchEngine($client, $facetFieldTransformationRegistry);
     }
 
-    public function testExceptionIsThrownIfSolrQueryIsInvalid()
+    public function testExceptionIsThrownIfQueryIsInvalid()
     {
         $nonExistingFieldCode = 'foooooooo';
         $fieldValue = 'whatever';
@@ -92,13 +92,13 @@ class ElasticsearchSearchEngineTest extends AbstractSearchEngineTest
         $searchEngine->query($searchCriteria, $this->createTestQueryOptions($sortOrderConfig));
     }
 
-    public function testExceptionIsThrownIfSolrIsNotAccessible()
+    public function testExceptionIsThrownIfElasticsearchIsNotAccessible()
     {
         $fieldCode = 'foo';
         $fieldValue = 'bar';
 
-        $testSolrConnectionPath = 'http://localhost:80/';
-        $client = new CurlElasticsearchHttpClient($testSolrConnectionPath);
+        $testConnectionPath = 'http://localhost:80/';
+        $client = new CurlElasticsearchHttpClient($testConnectionPath);
 
         $facetFieldTransformationRegistry = new FacetFieldTransformationRegistry();
 

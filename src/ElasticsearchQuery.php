@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LizardsAndPumpkins\DataPool\SearchEngine\Elasticsearch;
 
 use LizardsAndPumpkins\Context\Context;
+use LizardsAndPumpkins\DataPool\SearchEngine\Elasticsearch\Bool\ElasticsearchQueryBoolMust;
 use LizardsAndPumpkins\DataPool\SearchEngine\Elasticsearch\Operator\ElasticsearchQueryOperatorNotDefined;
 use LizardsAndPumpkins\DataPool\SearchEngine\FacetFilterRange;
 use LizardsAndPumpkins\DataPool\SearchEngine\SearchCriteria\SearchCriteria;
@@ -129,14 +130,16 @@ class ElasticsearchQuery
     private function packSubCriteriaIntoElasticsearchSubBools(string $condition, array $subBools)
     {
         if ('and' === $condition) {
-            return $this->getBoolFilterArrayRepresentation($subBools);
-        } elseif ('or' === $condition) {
-            return $this->getBoolShouldArrayRepresentation($subBools);
-        } else {
-            throw new UnsupportedSearchCriteriaConditionException(
-                sprintf('Unsupported criteria condition "%s".', $condition)
-            );
+            return $this->getBoolMustArrayRepresentation($subBools);
         }
+
+        if ('or' === $condition) {
+            return $this->getBoolShouldArrayRepresentation($subBools);
+        }
+
+        throw new UnsupportedSearchCriteriaConditionException(
+            sprintf('Unsupported criteria condition "%s".', $condition)
+        );
     }
 
     /**
@@ -290,5 +293,14 @@ class ElasticsearchQuery
     private function getBoolShouldArrayRepresentation(array $contents) : array
     {
         return (new ElasticsearchQueryBoolShould())->getFormattedArray($contents);
+    }
+
+    /**
+     * @param array[] $contents
+     * @return array[]
+     */
+    private function getBoolMustArrayRepresentation(array $contents) : array
+    {
+        return (new ElasticsearchQueryBoolMust())->getFormattedArray($contents);
     }
 }

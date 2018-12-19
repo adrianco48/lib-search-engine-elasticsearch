@@ -17,7 +17,7 @@
     </filter>
     <php>
         <!--
-        <server name="LP_ELASTICSEARCH_INTEGRATION_TEST_CONNECTION_PATH" value="http://localhost:9200/your-index"/>
+        <server name="LP_ELASTICSEARCH_INTEGRATION_TEST_CONNECTION_PATH" value="http://localhost:9200/your-index/_doc"/>
         -->
         <server name="LS_ELASTICSEARCH_FORCE_REFRESH" value="1"/>
     </php>

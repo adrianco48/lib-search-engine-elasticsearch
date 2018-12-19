@@ -63,14 +63,12 @@ class ElasticsearchQueryTest extends TestCase
 
         $filters = [];
 
-        $elasticsearchQuery = new ElasticsearchQuery(
+        (new ElasticsearchQuery(
             $this->stubCriteria,
             $this->stubContext,
             $this->stubFacetFieldTransformationRegistry,
             $filters
-        );
-
-        $elasticsearchQuery->toArray();
+        ))->toArray();
     }
     
     public function testExceptionIsThrownIfElasticsearchConditionIsUnknown()
@@ -90,14 +88,12 @@ class ElasticsearchQueryTest extends TestCase
 
         $filters = [];
 
-        $elasticsearchQuery = new ElasticsearchQuery(
+        (new ElasticsearchQuery(
             $this->stubCriteria,
             $this->stubContext,
             $this->stubFacetFieldTransformationRegistry,
             $filters
-        );
-
-        $elasticsearchQuery->toArray();
+        ))->toArray();
     }
     
     public function testExceptionIsThrownIfSearchCriteriaOperationFormatInvalid()
@@ -112,19 +108,17 @@ class ElasticsearchQueryTest extends TestCase
 
         $filters = [];
 
-        $elasticsearchQuery = new ElasticsearchQuery(
+        (new ElasticsearchQuery(
             $this->stubCriteria,
             $this->stubContext,
             $this->stubFacetFieldTransformationRegistry,
             $filters
-        );
-
-        $elasticsearchQuery->toArray();
+        ))->toArray();
     }
 
     public function testArrayRepresentationOfQueryContainsJoinedSourceMatchingBools()
     {
-        $this->stubCriteria->expects($this->once())->method('jsonSerialize')->willReturn([
+        $this->stubCriteria->method('jsonSerialize')->willReturn([
             'condition' => CompositeSearchCriterion::OR_CONDITION,
             'criteria' => [
                 [
