@@ -1,11 +1,11 @@
 {
-    "name": "adrianco48/lib-search-engine-elasticsearch",
+    "name": "lizards-and-pumpkins/lib-search-engine-elasticsearch",
     "description": "Lizards & Pumpkins Elasticsearch search engine module",
     "license": "BSD-3-Clause",
     "authors": [
         {
-            "name": "adrianco48",
-            "email": "gitadrianco48@gmail.com"
+            "name": "Lizards & Pumpkins UG",
+            "email": "hello@lizardsandpumpkins.com"
         }
     ],
     "require": {
