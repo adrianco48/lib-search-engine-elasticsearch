@@ -32,6 +32,11 @@ class CurlElasticsearchHttpClientTest extends TestCase
      */
     private static $returnType = 'json';
 
+    /**
+     * @param array
+     */
+    private static $response;
+
     public static function trackRequestUrl(string $url)
     {
         self::$requestUrl = $url;
@@ -46,9 +51,14 @@ class CurlElasticsearchHttpClientTest extends TestCase
         self::$curlOptionsSet[$option] = $value;
     }
 
-    public static function getReturnType() : string
+    public static function getReturnType(): string
     {
         return self::$returnType;
+    }
+
+    public static function getResponse(): ?array
+    {
+        return self::$response;
     }
 
     protected function setUp()
@@ -62,6 +72,7 @@ class CurlElasticsearchHttpClientTest extends TestCase
         self::$requestUrl = null;
         self::$curlOptionsSet = [];
         self::$returnType = 'json';
+        self::$response = null;
     }
 
     public function testInstanceOfElasticsearchHttpClientIsReturned()
@@ -125,6 +136,29 @@ class CurlElasticsearchHttpClientTest extends TestCase
         $this->client->select($parameters);
     }
 
+    public function testExceptionIsThrownIfResponseContainsError()
+    {
+        self::$response = [
+            'error' => [
+                'root_cause' => [
+                    [
+                        'type' => 'cluster_block_exception',
+                        'reason' => 'blocked by: [FORBIDDEN/12/index read-only / allow delete (api)];',
+                    ],
+                ],
+                'type' => 'cluster_block_exception',
+                'reason' => 'blocked by: [FORBIDDEN/12/index read-only / allow delete (api)];',
+            ],
+            'status' => 403,
+        ];
+
+        $this->expectException(ElasticsearchConnectionException::class);
+        $this->expectExceptionMessage('blocked by: [FORBIDDEN/12/index read-only / allow delete (api)];');
+
+        $parameters = [];
+        $this->client->select($parameters);
+    }
+
     public function testSuccessfulSelectRequestReturnsAnArray()
     {
         $parameters = [];
@@ -141,6 +175,7 @@ class CurlElasticsearchHttpClientTest extends TestCase
 function curl_init(string $url)
 {
     CurlElasticsearchHttpClientTest::trackRequestUrl($url);
+
     return \curl_init($url);
 }
 
@@ -158,11 +193,11 @@ function curl_setopt($handle, int $option, $value)
  * @param resource $handle
  * @return string
  */
-function curl_exec($handle) : string
+function curl_exec($handle): string
 {
     if (CurlElasticsearchHttpClientTest::getReturnType() === 'html') {
         return '<html><title>Error 404 Not Found</title><body></body></html>';
     }
 
-    return json_encode([]);
+    return json_encode(CurlElasticsearchHttpClientTest::getResponse() ?? []);
 }
