@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LizardsAndPumpkins\DataPool\SearchEngine\Elasticsearch\Http;
 
 use LizardsAndPumpkins\DataPool\SearchEngine\Elasticsearch\Http\Exception\ElasticsearchConnectionException;
+use LizardsAndPumpkins\DataPool\SearchEngine\Elasticsearch\Exception\ElasticsearchException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -152,7 +153,7 @@ class CurlElasticsearchHttpClientTest extends TestCase
             'status' => 403,
         ];
 
-        $this->expectException(ElasticsearchConnectionException::class);
+        $this->expectException(ElasticsearchException::class);
         $this->expectExceptionMessage('blocked by: [FORBIDDEN/12/index read-only / allow delete (api)];');
 
         $parameters = [];

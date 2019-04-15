@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LizardsAndPumpkins\DataPool\SearchEngine\Elasticsearch\Http;
 
 use LizardsAndPumpkins\DataPool\SearchEngine\Elasticsearch\Http\Exception\ElasticsearchConnectionException;
+use LizardsAndPumpkins\DataPool\SearchEngine\Elasticsearch\Exception\ElasticsearchException;
 
 class CurlElasticsearchHttpClient implements ElasticsearchHttpClient
 {
@@ -121,7 +122,7 @@ class CurlElasticsearchHttpClient implements ElasticsearchHttpClient
     private function validateResponse(array $response)
     {
         if (isset($response['error'])) {
-            throw new ElasticsearchConnectionException($response['error']['reason']);
+            throw new ElasticsearchException($response['error']['reason']);
         }
     }
 }
