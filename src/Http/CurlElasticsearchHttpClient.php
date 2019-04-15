@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LizardsAndPumpkins\DataPool\SearchEngine\Elasticsearch\Http;
 
 use LizardsAndPumpkins\DataPool\SearchEngine\Elasticsearch\Http\Exception\ElasticsearchConnectionException;
+use LizardsAndPumpkins\DataPool\SearchEngine\Elasticsearch\Exception\ElasticsearchException;
 
 class CurlElasticsearchHttpClient implements ElasticsearchHttpClient
 {
@@ -68,7 +69,7 @@ class CurlElasticsearchHttpClient implements ElasticsearchHttpClient
      * @param string $servlet
      * @return string
      */
-    private function constructUrl(string $servlet) : string
+    private function constructUrl(string $servlet): string
     {
         if ("" === $servlet) {
             return $this->elasticsearchConnectionPath;
@@ -105,6 +106,7 @@ class CurlElasticsearchHttpClient implements ElasticsearchHttpClient
 
         $response = json_decode($responseJson, true);
         $this->validateResponseType($responseJson);
+        $this->validateResponse($response);
 
         return $response;
     }
@@ -114,6 +116,13 @@ class CurlElasticsearchHttpClient implements ElasticsearchHttpClient
         if (json_last_error() !== JSON_ERROR_NONE) {
             $errorMessage = preg_replace('/.*<title>|<\/title>.*/ism', '', $rawResponse);
             throw new ElasticsearchConnectionException($errorMessage);
+        }
+    }
+
+    private function validateResponse(array $response)
+    {
+        if (isset($response['error'])) {
+            throw new ElasticsearchException($response['error']['reason']);
         }
     }
 }
