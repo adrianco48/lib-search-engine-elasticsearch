@@ -53,7 +53,15 @@ class ElasticsearchResponse
 
     public function getTotalNumberOfResults() : int
     {
-        return $this->response['hits']['total'] ?? 0;
+        if (! isset($this->response['hits']['total'])) {
+            return 0;
+        }
+
+        if (isset($this->response['hits']['total']['value'])) {
+            return $this->response['hits']['total']['value'];
+        }
+
+        return $this->response['hits']['total'];
     }
 
     /**
