@@ -57,7 +57,7 @@ class ElasticsearchResponse
             return 0;
         }
 
-        if (isset($this->response['hits']['total']['value'])) {
+        if ($this->isElasticsearchSevenFormat($this->response['hits']['total'])) {
             return $this->response['hits']['total']['value'];
         }
 
@@ -178,5 +178,14 @@ class ElasticsearchResponse
         }
 
         return $boundary;
+    }
+
+    /**
+     * @param $total int|array
+     * @return bool
+     */
+    private function isElasticsearchSevenFormat($total): bool
+    {
+        return isset($total['value']);
     }
 }
