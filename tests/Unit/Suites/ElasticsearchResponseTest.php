@@ -46,12 +46,20 @@ class ElasticsearchResponseTest extends TestCase
         $this->assertSame(0, $response->getTotalNumberOfResults());
     }
 
-    public function testTotalNumberOfResultsIsReturned()
+    public function testTotalNumberOfResultsIsReturnedForElasticsearchLowerThanSeven()
     {
         $responseArray = ['hits' => ['total' => 5]];
         $response = ElasticsearchResponse::fromElasticsearchResponseArray($responseArray, $this->stubFacetFieldTransformationRegistry);
 
         $this->assertSame(5, $response->getTotalNumberOfResults());
+    }
+
+    public function testTotalNumberOfResultsIsReturnedForElasticsearchSeven()
+    {
+        $responseArray = ['hits' => ['total' => ['value' => 20, 'relation' => 'eq']]];
+        $response = ElasticsearchResponse::fromElasticsearchResponseArray($responseArray, $this->stubFacetFieldTransformationRegistry);
+
+        $this->assertSame(20, $response->getTotalNumberOfResults());
     }
 
     public function testEmptyArrayIsReturnedIfElasticsearchResponseDoesNotContainDocumentsElement()
